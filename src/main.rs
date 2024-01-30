@@ -6,11 +6,10 @@ use umya_spreadsheet::*;
 
 fn main() {
     let file_path = Path::new("./test.xlsx"); //文件目录
-    let header_number = 1u32; //header 行数 前几行
+    let header_number = 2u32; //header 行数 前几行
     let col_index = 1;
     let book = reader::xlsx::read(file_path).unwrap(); //读取文件
     let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
-    let headers = sheet.get_collection_by_row(&header_number);
 
     //循环每一行
     for i in sheet.get_row_dimensions() {
@@ -20,21 +19,22 @@ fn main() {
             let sheet_new = new_book.get_sheet_by_name_mut("Sheet1").unwrap(); //新建表格
             let row = sheet.get_collection_by_row(i.get_row_num());
             //插入{header_number}行 将header写入
-            for s in 1..=col_index {
+            for s in 1..=header_number {
+                let headers = sheet.get_collection_by_row(&s);
                 sheet_new.insert_new_row(&s, &s);
                 for i in headers.clone() {
                     sheet_new
                         .get_cell_mut((*i.clone().get_coordinate().get_col_num(), s))
-                        .set_cell_value(i.get_cell_value().clone());
+                        .set_cell_value(i.get_cell_value().clone()).set_style(i.clone().get_style().clone());
                 }
             }
             //插入第二行 写入数据
-            let mut value_row_number = col_index + 1;
+            let value_row_number = header_number + 1;
             sheet_new.insert_new_row(&value_row_number, &value_row_number);
             for i in row.clone() {
                 sheet_new
-                    .get_cell_mut((*i.clone().get_coordinate().get_col_num(), 2))
-                    .set_cell_value(i.get_cell_value().clone());
+                    .get_cell_mut((*i.clone().get_coordinate().get_col_num(), value_row_number))
+                    .set_cell_value(i.get_cell_value().clone()).set_style(i.clone().get_style().clone());
             }
             //写入文件
             let filename = sheet
