@@ -1,5 +1,7 @@
 /*
+name:excel-split
 author:lidingyi
+
 */
 use std::path::Path;
 use umya_spreadsheet::*;
