@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::{path::Path};
 use umya_spreadsheet::*;
 use std::fs;  
 pub fn read_xlsx(filepath: &str) -> Spreadsheet {
@@ -40,7 +40,7 @@ pub fn get_cell_value(sheet: &Worksheet,col:u32,row:u32)-> String{
     .to_string()
 }
 
-pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32) {
+pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32,output:&Path) {
     /*
       sheet:需要分离的表
       header_number: 表头行数
@@ -70,10 +70,10 @@ pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32) {
 //            }
             //获取对应文件名称
             let filename: String = get_cell_value(sheet,col_index,rowid);
-
-            let filename = format!("./data/{name}.xlsx", name = filename);
-            println!(">>>>>>>>>>>>>>>>>>>>>{filename}");
-            let outpath = std::path::Path::new(&filename);
+            let filepath = format!("{filename}.xlsx");
+            let ouput_file = output.join(filepath.clone());
+            println!(">>>>>>>>>>>>>>>>>>>>>{:?}",ouput_file.as_path());
+            let outpath = std::path::Path::new(&ouput_file);
             writer::xlsx::write(&new_book, outpath).unwrap();
         }
     }
@@ -82,9 +82,10 @@ pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32) {
 
 
 //检测data目录是否存在
-pub fn check_path_exist(path:&str){
+pub fn check_path_exist(path:&str)->&Path{
     let cpath = Path::new(path);
     if !cpath.exists(){
         fs::create_dir_all(path).expect(&format!("{path}"));
     }
+    cpath
 }
