@@ -6,12 +6,8 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-slint = "1.4.1"
+slint = {version = "1.4.1", default-features = false ,features = ["backend-winit","renderer-femtovg","compat-1-2"]}
 umya-spreadsheet = "1.1.1"
-<<<<<<< HEAD
-slint = "1.4.0"
-=======
 
 [build-dependencies]
 slint-build = "1.4.1"
->>>>>>> 558809e992ffd3af2c51401ebee23f128e4649a7

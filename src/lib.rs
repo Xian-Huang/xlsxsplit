@@ -1,12 +1,6 @@
-<<<<<<< HEAD
-use std::path::Path;
-use umya_spreadsheet::*;
-
-=======
 use std::{path::Path};
 use umya_spreadsheet::*;
 use std::fs;  
->>>>>>> 558809e992ffd3af2c51401ebee23f128e4649a7
 pub fn read_xlsx(filepath: &str) -> Spreadsheet {
     /*
         读取xlsx文件
@@ -46,11 +40,7 @@ pub fn get_cell_value(sheet: &Worksheet,col:u32,row:u32)-> String{
     .to_string()
 }
 
-<<<<<<< HEAD
-pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32) {
-=======
 pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32,output:&Path) {
->>>>>>> 558809e992ffd3af2c51401ebee23f128e4649a7
     /*
       sheet:需要分离的表
       header_number: 表头行数
@@ -80,14 +70,6 @@ pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32,output:&Path
 //            }
             //获取对应文件名称
             let filename: String = get_cell_value(sheet,col_index,rowid);
-<<<<<<< HEAD
-            let filename = format!("./data/{name}.xlsx", name = filename);
-            println!(">>>>>>>>>>>>>>>>>>>>>{filename}");
-            let outpath = std::path::Path::new(&filename);
-            writer::xlsx::write(&new_book, outpath).unwrap();
-        }
-    }
-=======
             let filepath = format!("{filename}.xlsx");
             let ouput_file = output.join(filepath.clone());
             println!(">>>>>>>>>>>>>>>>>>>>>{:?}",ouput_file.as_path());
@@ -116,5 +98,4 @@ pub fn split_main(){
     let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
     let path = check_path_exist(output);
     split_book(sheet, header_number,col_index,path);
->>>>>>> 558809e992ffd3af2c51401ebee23f128e4649a7
 }
