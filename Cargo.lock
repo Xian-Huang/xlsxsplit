@@ -1936,7 +1936,9 @@ dependencies = [
  "codemap-diagnostic",
  "css-color-parser2",
  "derive_more",
+ "fontdue",
  "i-slint-common",
+ "image",
  "itertools",
  "linked_hash_set",
  "lyon_extra",
@@ -1945,6 +1947,7 @@ dependencies = [
  "once_cell",
  "proc-macro2",
  "quote",
+ "resvg",
  "rowan",
  "smol_str",
  "strum",
@@ -3486,6 +3489,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "slint-build"
+version = "1.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ebf98969a520e19ec675435b8c21b883d4a06489947e137bbd30859b50ad0c36"
+dependencies = [
+ "i-slint-compiler",
+ "spin_on",
+ "thiserror",
+ "toml_edit 0.21.1",
+]
+
+[[package]]
 name = "slint-macros"
 version = "1.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4876,6 +4891,7 @@ name = "xlsxsplit"
 version = "0.1.0"
 dependencies = [
  "slint",
+ "slint-build",
  "umya-spreadsheet",
 ]
 
