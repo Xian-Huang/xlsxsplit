@@ -6,14 +6,15 @@ export component MainWindow inherits Window {
 
     in-out property <string> text:"请选择文件或输入路径";
     in-out property <string> input;
-    in-out property <string> output;
-    in-out property <int> header_number;
-    in-out property <int> col_index;
+    in-out property <string> output:"/data";
+    in-out property <int> header_number:2;
+    in-out property <int> col_index:1;
 
 
 
     callback selectfile()->string; //选择文件
     callback splitbook(string,string,int,int);
+    
 
 
     VerticalLayout {
@@ -29,7 +30,8 @@ export component MainWindow inherits Window {
                 text: "选择文件";
                 x:260px;
                 clicked => {
-                    root.text = root.selectfile()
+                    root.text = root.selectfile();
+                    root.input = root.text;
                 }
             }
             Button {
@@ -37,7 +39,7 @@ export component MainWindow inherits Window {
                 y:220px;
                 x:50px;
                 clicked => {
-                    root.splitbook(input,output,header_number,col_index)
+                    root.splitbook(input,output,header_number,col_index);
                 }
             }
         }

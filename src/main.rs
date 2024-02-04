@@ -11,12 +11,7 @@ fn main() {
     let mainwidow = MainWindow::new().expect("MainWindow create fail!");
     mainwidow.on_selectfile(select_file);
 
-    let input = mainwidow.get_text().as_str();
-    let output = "./data";
-    
-    // mainwidow.on_splitbook(split_main);
-
-
+    mainwidow.on_splitbook(split_main);
     //运行界面
     mainwidow.run().unwrap();
 }
