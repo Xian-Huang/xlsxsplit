@@ -1,6 +1,27 @@
+import { Button, LineEdit } from "std-widgets.slint";
 export component MainWindow inherits Window {
-        Text {
-            text: "hello world";
-            color: green;
+    title: "spliter";
+    width: 400px;
+    height: 400px;
+    callback selectfile(); //选择文件
+
+
+    VerticalLayout {
+        Rectangle { 
+            background: blue; 
+            LineEdit {
+                font-size: 14px;
+                width: 200px;
+                x: 50px;
+                placeholder-text: "请选择文件或输入路径";
+            }
+            Button {
+                text: "选择文件";
+                x:260px;
+                clicked => {
+                    root.selectfile()
+                }
+            }
+        }
     }
 }
