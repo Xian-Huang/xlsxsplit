@@ -1,9 +1,22 @@
 /*
     author:lidingyi
 */
-// use xlsxsplit::{read_xlsx,split_book,check_path_exist,split_main};
+use xlsxsplit::{split_main};
+use xlsxsplit::select_file;
 slint::include_modules!();
 
+
 fn main() {
-    MainWindow::new().unwrap().run().unwrap();
+    //创建主页面
+    let mainwidow = MainWindow::new().expect("MainWindow create fail!");
+    mainwidow.on_selectfile(select_file);
+
+    let input = mainwidow.get_text().as_str();
+    let output = "./data";
+    
+    // mainwidow.on_splitbook(split_main);
+
+
+    //运行界面
+    mainwidow.run().unwrap();
 }

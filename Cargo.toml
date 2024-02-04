@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 slint = {version = "1.4.1", default-features = false ,features = ["backend-winit","renderer-femtovg","compat-1-2"]}
 umya-spreadsheet = "1.1.1"
+rfd = "0.13.0"
 
 [build-dependencies]
 slint-build = "1.4.1"

@@ -1,6 +1,9 @@
-use std::{path::Path};
+use rfd::FileDialog;
+use slint::SharedString;
+use std::fs;
+use std::path::Path;
 use umya_spreadsheet::*;
-use std::fs;  
+
 pub fn read_xlsx(filepath: &str) -> Spreadsheet {
     /*
         读取xlsx文件
@@ -30,17 +33,16 @@ pub fn book_set_value(sheet: &mut Worksheet, rows: &Vec<&Cell>, row_index: u32) 
     }
 }
 
-
-pub fn get_cell_value(sheet: &Worksheet,col:u32,row:u32)-> String{
+pub fn get_cell_value(sheet: &Worksheet, col: u32, row: u32) -> String {
     sheet
-    .get_cell((col, row))
-    .unwrap()
-    .get_cell_value()
-    .get_raw_value()
-    .to_string()
+        .get_cell((col, row))
+        .unwrap()
+        .get_cell_value()
+        .get_raw_value()
+        .to_string()
 }
 
-pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32,output:&Path) {
+pub fn split_book(sheet: &Worksheet, header_number: u32, col_index: u32, output: &Path) {
     /*
       sheet:需要分离的表
       header_number: 表头行数
@@ -60,42 +62,53 @@ pub fn split_book(sheet: &Worksheet,header_number:u32,col_index:u32,output:&Path
             }
             //插入第二行 写入数据
             let value_row_number = header_number + 1;
-            book_set_value(sheet_new,&row,value_row_number);
-//            sheet_new.insert_new_row(&value_row_number, &value_row_number);
-//            for i in row.clone() {
-//                sheet_new
-//                    .get_cell_mut((*i.clone().get_coordinate().get_col_num(), value_row_number))
-//                    .set_cell_value(i.get_cell_value().clone())
-//                    .set_style(i.clone().get_style().clone());
-//            }
+            book_set_value(sheet_new, &row, value_row_number);
+            //            sheet_new.insert_new_row(&value_row_number, &value_row_number);
+            //            for i in row.clone() {
+            //                sheet_new
+            //                    .get_cell_mut((*i.clone().get_coordinate().get_col_num(), value_row_number))
+            //                    .set_cell_value(i.get_cell_value().clone())
+            //                    .set_style(i.clone().get_style().clone());
+            //            }
             //获取对应文件名称
-            let filename: String = get_cell_value(sheet,col_index,rowid);
+            let filename: String = get_cell_value(sheet, col_index, rowid);
             let filepath = format!("{filename}.xlsx");
             let ouput_file = output.join(filepath.clone());
-            println!(">>>>>>>>>>>>>>>>>>>>>{:?}",ouput_file.as_path());
+            println!(">>>>>>>>>>>>>>>>>>>>>{:?}", ouput_file.as_path());
             let outpath = std::path::Path::new(&ouput_file);
             writer::xlsx::write(&new_book, outpath).unwrap();
         }
     }
 }
 
-
-
 //检测data目录是否存在
-pub fn check_path_exist(path:&str)->&Path{
+pub fn check_path_exist(path: &str) -> &Path {
     let cpath = Path::new(path);
-    if !cpath.exists(){
+    if !cpath.exists() {
         fs::create_dir_all(path).expect(&format!("{path}"));
     }
     cpath
 }
 
-pub fn split_main(){
-    let header_number = 2u32; //header 行数 前几行
-    let col_index = 1;
-    let output = "./data";
-    let book = &read_xlsx("./test.xlsx"); //读取文件
+pub fn split_main(input:&str,output:&str,header_number:u32,col_index:u32) {
+    // let header_number = 2u32; //header 行数 前几行
+    // let col_index = 1;
+    // let output = "./data";
+    let book = &read_xlsx(input); //读取文件
     let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
     let path = check_path_exist(output);
-    split_book(sheet, header_number,col_index,path);
+    split_book(sheet, header_number, col_index, path);
+}
+//选择文件
+pub fn select_file()->SharedString {
+    let files = FileDialog::new()
+        .add_filter("text", &["txt", "rs"])
+        .add_filter("rust", &["rs", "toml"])
+        .set_directory("/")
+        .pick_file();
+    if let Some(files) = files{
+            println!("{:?}",files.to_str().unwrap());
+            return files.to_str().unwrap().to_string().into();
+        }
+    panic!("选择文件失败")
 }

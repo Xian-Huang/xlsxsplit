@@ -3,7 +3,17 @@ export component MainWindow inherits Window {
     title: "spliter";
     width: 400px;
     height: 400px;
-    callback selectfile(); //选择文件
+
+    in-out property <string> text:"请选择文件或输入路径";
+    in-out property <string> input;
+    in-out property <string> output;
+    in-out property <int> header_number;
+    in-out property <int> col_index;
+
+
+
+    callback selectfile()->string; //选择文件
+    callback splitbook(string,string,int,int);
 
 
     VerticalLayout {
@@ -13,13 +23,21 @@ export component MainWindow inherits Window {
                 font-size: 14px;
                 width: 200px;
                 x: 50px;
-                placeholder-text: "请选择文件或输入路径";
+                placeholder-text: text;
             }
             Button {
                 text: "选择文件";
                 x:260px;
                 clicked => {
-                    root.selectfile()
+                    root.text = root.selectfile()
+                }
+            }
+            Button {
+                text: "开始";
+                y:220px;
+                x:50px;
+                clicked => {
+                    root.splitbook(input,output,header_number,col_index)
                 }
             }
         }
