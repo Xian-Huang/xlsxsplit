@@ -15,8 +15,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: gdk-3.0
-      run: sudo apt-get gdk-3.0
     - uses: actions/checkout@v4
     - name: Build
       run: cargo build --verbose
