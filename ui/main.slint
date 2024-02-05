@@ -1,4 +1,4 @@
-import { Button, LineEdit } from "std-widgets.slint";
+import { Button, LineEdit, SpinBox } from "std-widgets.slint";
 export component MainWindow inherits Window {
     title: "spliter";
     width: 400px;
@@ -26,6 +26,13 @@ export component MainWindow inherits Window {
                 x: 50px;
                 placeholder-text: text;
             }
+            LineEdit {
+                font-size: 14px;
+                width: 200px;
+                x: 50px;
+                y:220px;
+                placeholder-text: output;
+            }
             Button {
                 text: "选择文件";
                 x:260px;
@@ -37,10 +44,34 @@ export component MainWindow inherits Window {
             Button {
                 text: "开始";
                 y:220px;
-                x:50px;
+                x:260px;
                 clicked => {
                     root.splitbook(input,output,header_number,col_index);
                 }
+            }
+            Text {
+                x:50px;
+                y:123px;
+                text: "表头行数";
+                font-size: 18px;
+                color: white;
+            }
+            Text {
+                x:208px;
+                y:123px;
+                text: "基准列";
+                font-size: 18px;
+                color: white;
+            }
+            SpinBox {
+                x:50px;
+                y:150px;
+                value:header_number;
+            }
+            SpinBox {
+                x:208px;
+                y:150px;
+                value: col_index;
             }
         }
     }
