@@ -1,52 +1,82 @@
-import { Button, LineEdit, SpinBox, ProgressIndicator } from "std-widgets.slint";
+import { Button, LineEdit, SpinBox, ProgressIndicator, Spinner } from "std-widgets.slint";
 export component MainWindow inherits Window {
     title: "spliter";
     width: 400px;
     height: 400px;
+    
 
     in-out property <string> text:"请选择文件或输入路径";
     in-out property <string> input;
     in-out property <string> output:"/data";
+    in-out property <string> output_text:"默认输出路径："+output;
     in-out property <int> header_number:2;
     in-out property <int> col_index:1;
     in-out property <float> progress:0;
+    in-out property <bool> progress-indeterminate:false;
 
 
-
+    in-out property <bool> btn_enable:true;
     callback selectfile()->string; //选择文件
+    callback selectpath()->string; //选择文件
+
     callback splitbook();
-    
+
+
+    public function disable_btn() {
+        root.btn_enable = !root.btn_enable;
+        root.progress-indeterminate = false;
+        root.progress = 1;
+    }
+
 
 
     VerticalLayout {
+        
         Rectangle { 
-            background: blue; 
+            
+            background: darkgray; 
             LineEdit {
+                enabled: btn_enable;
                 font-size: 14px;
                 width: 200px;
                 x: 50px;
                 placeholder-text: text;
             }
             LineEdit {
+                enabled: btn_enable;
                 font-size: 14px;
                 width: 200px;
                 x: 50px;
                 y:220px;
-                placeholder-text: "默认输出路径："+output;
+                placeholder-text: output_text;
             }
             Button {
-                text: "选择文件";
+                text: "选择输出文件";
                 x:260px;
+                y:220px;
+                enabled: btn_enable;
+                clicked => {
+                    root.output_text = root.selectpath();
+                    root.output = root.output_text;
+                }
+            }
+            Button {
+                text: "选择输入文件";
+                x:260px;
+                enabled: btn_enable;
                 clicked => {
                     root.text = root.selectfile();
                     root.input = root.text;
                 }
             }
             Button {
+                enabled: btn_enable;
                 text: "开始";
-                y:220px;
-                x:260px;
+                y:290px;
+                x:280px;
                 clicked => {
+                    root.btn_enable = false;
+                    root.progress-indeterminate = true;
                     root.splitbook();
                 }
             }
@@ -58,28 +88,32 @@ export component MainWindow inherits Window {
                 color: white;
             }
             Text {
-                x:208px;
+                x:233px;
                 y:123px;
                 text: "基准列";
                 font-size: 16px;
                 color: white;
             }
             SpinBox {
+                enabled: btn_enable;
                 x:50px;
                 y:150px;
                 value:header_number;
             }
             SpinBox {
-                x:208px;
+                enabled: btn_enable;
+                x:233px;
                 y:150px;
                 value: col_index;
             }
             ProgressIndicator {
-                width: 286px;
+                width: 313px;
                 height: 20px;
                 x:50px;
                 y:260px;
+                indeterminate:progress-indeterminate;
                 progress: progress;
+                
             }
         }
     }

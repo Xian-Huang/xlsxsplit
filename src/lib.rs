@@ -104,11 +104,11 @@ pub fn split_main(input:SharedString,output:SharedString,header_number:i32,col_i
     let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
     let path = check_path_exist(output.as_str());
     split_book(sheet, header_number, col_index, path,mainwindow);
+    mainwindow.invoke_disable_btn();
 }
 
 
 pub fn presplitbook(mainwindow:&MainWindow){
-
     let weak = mainwindow.as_weak().unwrap();
     mainwindow.on_splitbook(move || {
         split_main(weak.get_input(), weak.get_output(), weak.get_header_number(), weak.get_col_index(), &weak)
@@ -124,6 +124,24 @@ pub fn select_file()->SharedString {
     if let Some(files) = files{
             println!("{:?}",files.to_str().unwrap());
             return files.to_str().unwrap().to_string().into();
+    }else {
+        println!("选择目录失败");
+        return SharedString::new();
     }
-    panic!("选择文件失败")
+}
+
+
+//选择文件
+pub fn select_path()->SharedString {
+    let files = FileDialog::new()
+        .add_filter("dir", &[""])
+        .set_directory("/")
+        .pick_file();
+    if let Some(files) = files{
+            println!("{:?}",files.to_str().unwrap());
+            return files.to_str().unwrap().to_string().into();
+    }else {
+        println!("选择目录失败");
+        return SharedString::new();
+    }
 }
