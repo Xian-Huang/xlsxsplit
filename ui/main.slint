@@ -1,4 +1,4 @@
-import { Button, LineEdit, SpinBox } from "std-widgets.slint";
+import { Button, LineEdit, SpinBox, ProgressIndicator } from "std-widgets.slint";
 export component MainWindow inherits Window {
     title: "spliter";
     width: 400px;
@@ -9,6 +9,7 @@ export component MainWindow inherits Window {
     in-out property <string> output:"/data";
     in-out property <int> header_number:2;
     in-out property <int> col_index:1;
+    in-out property <int> progress:50;
 
 
 
@@ -31,7 +32,7 @@ export component MainWindow inherits Window {
                 width: 200px;
                 x: 50px;
                 y:220px;
-                placeholder-text: output;
+                placeholder-text: "默认输出路径："+output;
             }
             Button {
                 text: "选择文件";
@@ -53,14 +54,14 @@ export component MainWindow inherits Window {
                 x:50px;
                 y:123px;
                 text: "表头行数";
-                font-size: 18px;
+                font-size: 16px;
                 color: white;
             }
             Text {
                 x:208px;
                 y:123px;
                 text: "基准列";
-                font-size: 18px;
+                font-size: 16px;
                 color: white;
             }
             SpinBox {
@@ -72,6 +73,14 @@ export component MainWindow inherits Window {
                 x:208px;
                 y:150px;
                 value: col_index;
+            }
+            ProgressIndicator {
+                width: 286px;
+                height: 20px;
+                x:50px;
+                y:260px;
+                progress: progress/100;
+                
             }
         }
     }

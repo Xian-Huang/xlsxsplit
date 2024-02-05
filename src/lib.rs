@@ -4,6 +4,21 @@ use std::fs;
 use std::path::Path;
 use umya_spreadsheet::*;
 
+struct Progress{
+    value:i32
+}
+
+impl Progress {
+    pub fn new(x:i32)->Self{
+        Progress{value:x}
+    }
+
+    pub fn set_value(self,x:i32)->Self{
+        Progress{value:x}
+    }
+}
+
+
 pub fn read_xlsx(filepath: &str) -> Spreadsheet {
     /*
         读取xlsx文件
@@ -49,6 +64,8 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
       col_index: 以对应列命名
     */
     //循环每一行
+    let mut finished = 0;
+    let sum_row = sheet.get_highest_row();
     for i in sheet.get_row_dimensions() {
         let rowid = *i.get_row_num();
         if rowid > header_number.try_into().unwrap() {
