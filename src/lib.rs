@@ -3,20 +3,7 @@ use slint::SharedString;
 use std::fs;
 use std::path::Path;
 use umya_spreadsheet::*;
-
-struct Progress{
-    value:i32
-}
-
-impl Progress {
-    pub fn new(x:i32)->Self{
-        Progress{value:x}
-    }
-
-    pub fn set_value(self,x:i32)->Self{
-        Progress{value:x}
-    }
-}
+slint::include_modules!();
 
 
 pub fn read_xlsx(filepath: &str) -> Spreadsheet {
@@ -57,7 +44,7 @@ pub fn get_cell_value(sheet: &Worksheet, col: u32, row: u32) -> String {
         .to_string()
 }
 
-pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output: &Path) {
+pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output: &Path,mainwindow:&MainWindow) {
     /*
       sheet:需要分离的表
       header_number: 表头行数
@@ -91,9 +78,13 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             let filename: String = get_cell_value(sheet, col_index.try_into().unwrap(), rowid);
             let filepath = format!("{filename}.xlsx");
             let ouput_file = output.join(filepath.clone());
-            println!(">>>>>>>>>>>>>>>>>>>>>{:?}", ouput_file.as_path());
             let outpath = std::path::Path::new(&ouput_file);
             writer::xlsx::write(&new_book, outpath).unwrap();
+            finished +=1;
+            let pregress = finished as f32/sum_row as f32;
+            println!(">>>>>>>>>>>>>>>>>>>>>{:?} {pregress} {finished}/{sum_row}", ouput_file.as_path());
+            mainwindow.set_progress(pregress);
+            
         }
     }
 }
@@ -107,13 +98,23 @@ pub fn check_path_exist(path: &str) -> &Path {
     cpath
 }
 
-pub fn split_main(input:SharedString,output:SharedString,header_number:i32,col_index:i32) {
+pub fn split_main(input:SharedString,output:SharedString,header_number:i32,col_index:i32,mainwindow:&MainWindow) {
     
     let book = &read_xlsx(input.as_str()); //读取文件
     let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
     let path = check_path_exist(output.as_str());
-    split_book(sheet, header_number, col_index, path);
+    split_book(sheet, header_number, col_index, path,mainwindow);
 }
+
+
+pub fn presplitbook(mainwindow:&MainWindow){
+
+    let weak = mainwindow.as_weak().unwrap();
+    mainwindow.on_splitbook(move || {
+        split_main(weak.get_input(), weak.get_output(), weak.get_header_number(), weak.get_col_index(), &weak)
+    });
+}
+
 //选择文件
 pub fn select_file()->SharedString {
     let files = FileDialog::new()

@@ -9,12 +9,12 @@ export component MainWindow inherits Window {
     in-out property <string> output:"/data";
     in-out property <int> header_number:2;
     in-out property <int> col_index:1;
-    in-out property <int> progress:50;
+    in-out property <float> progress:0;
 
 
 
     callback selectfile()->string; //选择文件
-    callback splitbook(string,string,int,int);
+    callback splitbook();
     
 
 
@@ -47,7 +47,7 @@ export component MainWindow inherits Window {
                 y:220px;
                 x:260px;
                 clicked => {
-                    root.splitbook(input,output,header_number,col_index);
+                    root.splitbook();
                 }
             }
             Text {
@@ -79,8 +79,7 @@ export component MainWindow inherits Window {
                 height: 20px;
                 x:50px;
                 y:260px;
-                progress: progress/100;
-                
+                progress: progress;
             }
         }
     }
