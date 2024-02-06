@@ -1,13 +1,15 @@
 import { Button, LineEdit, SpinBox, ProgressIndicator, Spinner } from "std-widgets.slint";
 export component MainWindow inherits Window {
-    title: "spliter";
+    title: "SPLITER";
     width: 400px;
     height: 400px;
+    icon: @image-url("D:/ldy/Rust/xlsxsplit/ui/static/images/icon.png");
+    
     
 
     in-out property <string> text:"请选择文件或输入路径";
     in-out property <string> input;
-    in-out property <string> output:"/data";
+    in-out property <string> output:"./data";
     in-out property <string> output_text:"默认输出路径："+output;
     in-out property <int> header_number:2;
     in-out property <int> col_index:1;
@@ -49,6 +51,7 @@ export component MainWindow inherits Window {
                 x: 50px;
                 y:220px;
                 placeholder-text: output_text;
+                text:output;
             }
             Button {
                 text: "选择输出文件";
