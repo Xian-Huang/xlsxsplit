@@ -4,8 +4,6 @@ export component MainWindow inherits Window {
     width: 400px;
     height: 400px;
     icon: @image-url("D:/ldy/Rust/xlsxsplit/ui/static/images/icon.png");
-    
-    
 
     in-out property <string> text:"请选择文件或输入路径";
     in-out property <string> input;
@@ -15,6 +13,33 @@ export component MainWindow inherits Window {
     in-out property <int> col_index:1;
     in-out property <float> progress:0;
     in-out property <bool> progress-indeterminate:false;
+    in-out property <string> error_text;
+
+    error_window:=PopupWindow{
+        width: 200px;
+        height: 40px;
+        x:100px;
+        y:50px;
+        
+        Rectangle {
+            Text {
+                text: error_text;
+                font-size: 15px;
+            }
+            background: whitesmoke;
+        }
+
+    }
+
+    public function error_window_show(text:string) {
+        error_text = text;
+        error_window.show();
+    }
+    public function error_window_close() {
+        error_text = "";
+        error_window.close();
+    }
+
 
 
     in-out property <bool> btn_enable:true;
@@ -30,14 +55,9 @@ export component MainWindow inherits Window {
         root.progress = 1;
     }
 
-
-
-
-
     VerticalLayout {
         
         Rectangle { 
-            
             background: darkgray; 
             LineEdit {
                 enabled: btn_enable;
@@ -80,6 +100,7 @@ export component MainWindow inherits Window {
                 y:290px;
                 x:280px;
                 clicked => {
+                    error_window.show();
                     root.btn_enable = false;
                     root.progress-indeterminate = true;
                     root.splitbook();
@@ -124,7 +145,6 @@ export component MainWindow inherits Window {
                 y:260px;
                 indeterminate:progress-indeterminate;
                 progress: progress;
-                
             }
         }
     }

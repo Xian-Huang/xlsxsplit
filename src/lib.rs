@@ -79,7 +79,10 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             let filepath = format!("{filename}.xlsx");
             let ouput_file = output.join(filepath.clone());
             let outpath = std::path::Path::new(&ouput_file);
-            writer::xlsx::write(&new_book, outpath).expect("文件写入失败！");
+            if let Err(res) = writer::xlsx::write(&new_book, outpath){
+                mainwindow.invoke_error_window_show("写入文件失败！".into());
+                break;
+            }
             finished +=1;
             let pregress = finished as f32/sum_row as f32;
             println!(">>>>>>>>>>>>>>>>>>>>>{:?} {pregress} {finished}/{sum_row}", ouput_file.as_path());
@@ -116,7 +119,7 @@ pub fn presplitbook(mainwindow:&MainWindow){
 }
 
 //选择文件
-pub fn select_file()->SharedString {
+pub fn select_file(mainwindow:&MainWindow)->SharedString {
     let files = FileDialog::new()
         .add_filter("data", &["csv", "xlsx"])
         .set_directory("/")
@@ -126,13 +129,14 @@ pub fn select_file()->SharedString {
             return files.to_str().unwrap().to_string().into();
     }else {
         println!("选择输入文件失败");
+        mainwindow.invoke_error_window_show("选择输入文件失败".into());
         return SharedString::new();
     }
 }
 
 
 //选择输出目录
-pub fn select_path()->SharedString {
+pub fn select_path(mainwindow:&MainWindow)->SharedString {
     let files = FileDialog::new()
         .pick_folder();
     if let Some(files) = files{
@@ -140,6 +144,7 @@ pub fn select_path()->SharedString {
             return files.to_str().unwrap().to_string().into();
     }else {
         println!("选择输出目录失败");
+        mainwindow.invoke_error_window_show("选择输出目录失败".into());
         return SharedString::new();
     }
 }
