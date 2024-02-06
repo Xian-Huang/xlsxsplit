@@ -134,9 +134,7 @@ pub fn select_file()->SharedString {
 //选择文件
 pub fn select_path()->SharedString {
     let files = FileDialog::new()
-        .add_filter("dir", &[""])
-        .set_directory("/")
-        .pick_file();
+        .pick_folder();
     if let Some(files) = files{
             println!("{:?}",files.to_str().unwrap());
             return files.to_str().unwrap().to_string().into();
