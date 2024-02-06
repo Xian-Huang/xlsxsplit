@@ -6,13 +6,13 @@ use umya_spreadsheet::*;
 slint::include_modules!();
 
 
-pub fn read_xlsx(filepath: &str) -> Spreadsheet {
+pub fn read_xlsx(filepath: &str) -> Result<Spreadsheet, reader::xlsx::XlsxError> {
     /*
         读取xlsx文件
         return: &SpredSheet
     */
     let file_path = Path::new(filepath); //文件目录
-    reader::xlsx::read(file_path).expect("读取文件错误") //读取文件
+    reader::xlsx::read(file_path) //读取文件
 }
 
 pub fn book_set_header(sheet: &mut Worksheet, headers: &Vec<&Cell>, row_index: u32) {
@@ -108,11 +108,17 @@ pub fn check_path_exist(path: &str) -> &Path {
 
 pub fn split_main(input:SharedString,output:SharedString,header_number:i32,col_index:i32,mainwindow:&MainWindow) {
     
-    let book = &read_xlsx(input.as_str()); //读取文件
-    let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
-    let path = check_path_exist(output.as_str());
-    split_book(sheet, header_number, col_index, path,mainwindow);
-    mainwindow.invoke_disable_btn();
+    // let book_result = read_xlsx(input.as_str()); //读取文件
+    if let Ok(book) = read_xlsx(input.as_str()){
+        let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
+        let path = check_path_exist(output.as_str());
+        split_book(sheet, header_number, col_index, path,mainwindow);
+        mainwindow.invoke_disable_btn();
+    }else{
+        mainwindow.invoke_error_window_show("文件读取失败".into());
+        mainwindow.invoke_disable_btn();
+    }
+   
 }
 
 
