@@ -80,7 +80,7 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             let ouput_file = output.join(filepath.clone());
             let outpath = std::path::Path::new(&ouput_file);
             if outpath.exists(){
-                if let Err(res) = writer::xlsx::write(&new_book, outpath){
+                if let Err(_) = writer::xlsx::write(&new_book, outpath){
                     mainwindow.invoke_error_window_show("写入文件失败！".into());
                     break;
                 }
@@ -108,7 +108,6 @@ pub fn check_path_exist(path: &str) -> &Path {
 
 pub fn split_main(input:SharedString,output:SharedString,header_number:i32,col_index:i32,mainwindow:&MainWindow) {
     
-    // let book_result = read_xlsx(input.as_str()); //读取文件
     if let Ok(book) = read_xlsx(input.as_str()){
         let sheet = book.get_sheet_collection().first().unwrap(); //获取第一个sheet
         let path = check_path_exist(output.as_str());
