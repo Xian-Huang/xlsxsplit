@@ -79,10 +79,15 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             let filepath = format!("{filename}.xlsx");
             let ouput_file = output.join(filepath.clone());
             let outpath = std::path::Path::new(&ouput_file);
-            if let Err(res) = writer::xlsx::write(&new_book, outpath){
-                mainwindow.invoke_error_window_show("写入文件失败！".into());
-                break;
+            if outpath.exists(){
+                if let Err(res) = writer::xlsx::write(&new_book, outpath){
+                    mainwindow.invoke_error_window_show("写入文件失败！".into());
+                    break;
+                }
+            }else{
+                mainwindow.invoke_error_window_show("输出目录不存在".into());
             }
+            
             finished +=1;
             let pregress = finished as f32/sum_row as f32;
             println!(">>>>>>>>>>>>>>>>>>>>>{:?} {pregress} {finished}/{sum_row}", ouput_file.as_path());
