@@ -32,6 +32,8 @@ export component MainWindow inherits Window {
 
 
 
+
+
     VerticalLayout {
         
         Rectangle { 
@@ -102,12 +104,18 @@ export component MainWindow inherits Window {
                 x:50px;
                 y:150px;
                 value:header_number;
+                edited => {
+                    root.header_number = self.value
+                 }
             }
             SpinBox {
                 enabled: btn_enable;
                 x:233px;
                 y:150px;
                 value: col_index;
+                edited => {
+                   root.col_index = self.value
+                }
             }
             ProgressIndicator {
                 width: 313px;
