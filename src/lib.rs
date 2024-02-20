@@ -155,6 +155,6 @@ pub fn select_path(mainwindow:&MainWindow)->SharedString {
     }else {
         println!("选择输出目录失败");
         mainwindow.invoke_error_window_show("选择输出目录失败".into());
-        return SharedString::new();
+        return mainwindow.get_output();
     }
 }
