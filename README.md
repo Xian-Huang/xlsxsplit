@@ -11,5 +11,5 @@ table-Split可以分离表格中的每一行，并且携带表头（个人练习
 ```
 
 <div align="center">
-    <img width="300" src="./.github/image1.png"></img>
+    <img width="300" src="./.github/image.png"></img>
 </div>
