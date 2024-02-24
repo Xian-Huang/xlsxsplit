@@ -1,4 +1,4 @@
-### table-Split
+### Xlsx-Split
 
 ```
 table-Split可以分离表格中的每一行，并且携带表头（个人练习），目前只适用于windows。
