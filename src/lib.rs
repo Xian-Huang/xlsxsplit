@@ -2,6 +2,7 @@ use rfd::FileDialog;
 use slint::SharedString;
 use std::fs;
 use std::path::Path;
+use std::time::Duration;
 use umya_spreadsheet::*;
 slint::include_modules!();
 
@@ -52,13 +53,24 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
     */
     //循环每一行
     let mut finished = 0;
-    let sum_row = sheet.get_highest_row();
+    let sum_row = sheet.get_highest_row()-header_number as u32;
     for i in sheet.get_row_dimensions() {
         let rowid = *i.get_row_num();
         if rowid > header_number.try_into().unwrap() {
             let mut new_book = new_file(); //创建新的文件
             let sheet_new = new_book.get_sheet_by_name_mut("Sheet1").unwrap(); //新建表格
             let row = sheet.get_collection_by_row(i.get_row_num());
+
+            //获取对应文件名称
+            let filename: String = get_cell_value(sheet, col_index.try_into().unwrap(), rowid);
+            // 获取名称为空则不进行下一步
+            if filename.is_empty(){
+                continue;
+            }
+            let filepath = format!("{filename}.xlsx");
+            let ouput_file = output.join(filepath.clone());
+            let outpath = std::path::Path::new(&ouput_file);
+
             //插入{header_number}行 将header写入
             for s in 1..=header_number {
                 let headers = sheet.get_collection_by_row(&s.try_into().unwrap());
@@ -67,22 +79,17 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             //插入第二行 写入数据
             let value_row_number = header_number + 1;
             book_set_value(sheet_new, &row, value_row_number.try_into().unwrap());
-            //            sheet_new.insert_new_row(&value_row_number, &value_row_number);
-            //            for i in row.clone() {
-            //                sheet_new
-            //                    .get_cell_mut((*i.clone().get_coordinate().get_col_num(), value_row_number))
-            //                    .set_cell_value(i.get_cell_value().clone())
-            //                    .set_style(i.clone().get_style().clone());
-            //            }
-            //获取对应文件名称
-            let filename: String = get_cell_value(sheet, col_index.try_into().unwrap(), rowid);
-            let filepath = format!("{filename}.xlsx");
-            let ouput_file = output.join(filepath.clone());
-            let outpath = std::path::Path::new(&ouput_file);
+
+            
             if output.exists(){
-                if let Err(_) = writer::xlsx::write(&new_book, outpath){
-                    mainwindow.invoke_error_window_show("写入文件失败！".into());
-                    break;
+                match writer::xlsx::write(&new_book, outpath) {
+                    Ok(_) => {
+                        mainwindow.invoke_error_window_show(outpath.to_str().unwrap().into());
+                    },
+                    Err(e) => {
+                        mainwindow.invoke_error_window_show("写入文件失败！".into());
+                        break;
+                    },
                 }
             }else{
                 mainwindow.invoke_error_window_show(format!("输出目录不存在").into());
@@ -91,6 +98,7 @@ pub fn split_book(sheet: &Worksheet, header_number: i32, col_index: i32, output:
             finished +=1;
             let pregress = finished as f32/sum_row as f32;
             println!(">>>>>>>>>>>>>>>>>>>>>{:?} {pregress} {finished}/{sum_row}", ouput_file.as_path());
+            mainwindow.invoke_error_window_show(format!("{finished}/{sum_row}",finished=finished,sum_row=sum_row).into());
             mainwindow.set_progress(pregress);
             
         }
